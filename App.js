@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React from 'react';
 import {
   SafeAreaView,
@@ -16,61 +8,93 @@ import {
   StatusBar,
 } from 'react-native';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import PinMap from './PinMap';
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import Geolocation from '@react-native-community/geolocation';
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: '',
+      location: '',
+    };
+  }
+
+  async componentDidMount() {
+    const location = await this.getCurrentPos(10000).catch(error => {
+      this.setState({error});
+    });
+    this.setState({location});
+  }
+
+  getCurrentPos(timeout = 5000) {
+    return new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(resolve, reject, {
+        timeout,
+        enableHighAccuracy: true,
+      });
+    });
+  }
+
+  render() {
+    const {location, error} = this.state;
+    let mapModalContent;
+    if (location) {
+      const LATITUDE = location.coords.latitude;
+      const LONGITUDE = location.coords.longitude;
+      mapModalContent = (
+        <PinMap
+          latitude={LATITUDE}
+          longitude={LONGITUDE}
+          address={''}
+          navigation={this.props.navigation}
+        />
+      );
+    }
+    return (
+      <View style={{flex: 1}} testID="home">
+        <StatusBar barStyle="dark-content" />
+        <SafeAreaView style={{flex: 1}}>
+          <ScrollView
+            contentInsetAdjustmentBehavior="automatic"
+            style={styles.scrollView}>
+            <View style={styles.body}>
+              {!!location && (
+                <View style={{flex: 1}}>
+                  {mapModalContent}
+                  <View style={{flex: 1}}>
+                    {Object.keys(location.coords).map(key => {
+                      return (
+                        <Text key={key}>
+                          {key} : {location.coords[key]}
+                        </Text>
+                      );
+                    })}
+                  </View>
+                </View>
+              )}
+              {!!error && (
+                <Text>
+                  error{'\n'}
+                  {Object.keys(error).map(key => {
+                    return (
+                      <Text key={key}>
+                        {key} : {error[key]}
+                        {'\n'}
+                      </Text>
+                    );
+                  })}
+                </Text>
+              )}
             </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
+          </ScrollView>
+        </SafeAreaView>
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   scrollView: {
