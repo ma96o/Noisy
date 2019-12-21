@@ -65,6 +65,7 @@ class App extends React.Component {
                 <View style={{flex: 1}}>
                   {mapModalContent}
                   <View style={{flex: 1}}>
+                    <Text>{`location: ${JSON.stringify(location)}`}</Text>
                     {Object.keys(location.coords).map(key => {
                       return (
                         <Text key={key}>

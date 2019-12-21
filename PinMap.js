@@ -37,7 +37,7 @@ const Styles = {
   container: {
     flex: 1,
     backgroundColor: '#000',
-    height: 500,
+    height: 700,
   },
   map: {
     width: '100%',
