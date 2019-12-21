@@ -9,13 +9,11 @@ import {
   Dimensions,
 } from 'react-native';
 
-import PinMap from './PinMap';
-
+import MapView from 'react-native-maps';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Geolocation from '@react-native-community/geolocation';
 var {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
-
 const LATITUDE_DELTA = 0.01;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
@@ -50,14 +48,16 @@ class App extends React.Component {
 
     Geolocation.getCurrentPosition(
       position => {
+        const initialRegion = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        };
         this.setState({
-          region: {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-          },
+          region: initialRegion,
         });
+        this.initialRegion = initialRegion;
       },
       error => alert(error.message),
       {enableHighAccuracy: true, timeout: 2000, maximumAge: 0},
@@ -90,24 +90,9 @@ class App extends React.Component {
 
   render() {
     const {location, error, region} = this.state;
-    let mapModalContent;
     //    if (location) {
     //      const LATITUDE = location.coords.latitude;
     //      const LONGITUDE = location.coords.longitude;
-    if (region) {
-      const LATITUDE = region.latitude;
-      const LONGITUDE = region.longitude;
-      mapModalContent = (
-        <PinMap
-          latitude={LATITUDE}
-          longitude={LONGITUDE}
-          address={''}
-          navigation={this.props.navigation}
-          region={region}
-          onRegionChange={this.onRegionChange.bind(this)}
-        />
-      );
-    }
     return (
       <View style={{flex: 1}} testID="home">
         <StatusBar barStyle="dark-content" />
@@ -118,7 +103,19 @@ class App extends React.Component {
             <View style={styles.body}>
               {!!region && (
                 <View style={{flex: 1}}>
-                  {mapModalContent}
+                  <MapView
+                    style={styles.map}
+                    initialRegion={this.initialRegion}
+                    region={region}
+                    onRegionChange={this.onRegionChange.bind(this)}>
+                    <MapView.Marker
+                      image={require('./map_pin_car.png')}
+                      coordinate={{
+                        latitude: region.latitude,
+                        longitude: region.longitude,
+                      }}
+                    />
+                  </MapView>
                   <View style={{flex: 1}}>
                     <Text>{`location: ${JSON.stringify(region)}`}</Text>
                     {Object.keys(region).map(key => {
@@ -130,19 +127,6 @@ class App extends React.Component {
                     })}
                   </View>
                 </View>
-              )}
-              {!!error && (
-                <Text>
-                  error{'\n'}
-                  {Object.keys(error).map(key => {
-                    return (
-                      <Text key={key}>
-                        {key} : {error[key]}
-                        {'\n'}
-                      </Text>
-                    );
-                  })}
-                </Text>
               )}
             </View>
           </ScrollView>
@@ -188,6 +172,10 @@ const styles = StyleSheet.create({
     padding: 4,
     paddingRight: 12,
     textAlign: 'right',
+  },
+  map: {
+    width: '100%',
+    height: 700,
   },
 });
 
