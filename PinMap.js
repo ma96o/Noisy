@@ -25,8 +25,15 @@ class PinMap extends React.Component {
 
     return (
       <View style={Styles.container} testID={this.props.testID}>
-        <MapView style={Styles.map} initialRegion={INITIAL_REGION}>
-          <MapView.Marker coordinate={COORDINATE} />
+        <MapView
+          style={Styles.map}
+          initialRegion={INITIAL_REGION}
+          region={this.props.region}
+          onRegionChangeComplete={this.props.onRegionChange}>
+          <MapView.Marker
+            image={require('./map_pin_car.png')}
+            coordinate={COORDINATE}
+          />
         </MapView>
       </View>
     );

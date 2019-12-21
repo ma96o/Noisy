@@ -15,9 +15,6 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Geolocation from '@react-native-community/geolocation';
 var {width, height} = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
-// (Initial Static Location) Mumbai
-const LATITUDE = 19.076;
-const LONGITUDE = 72.8777;
 
 const LATITUDE_DELTA = 0.01;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
@@ -29,8 +26,8 @@ class App extends React.Component {
       error: '',
       location: '',
       region: {
-        latitude: LATITUDE,
-        longitude: LONGITUDE,
+        latitude: '',
+        longitude: '',
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       },
@@ -69,7 +66,7 @@ class App extends React.Component {
     this.watchID = Geolocation.watchPosition(
       position => {
         const newRegion = {
-          latitude: position.coords.latitude,
+          latitude: position.coords.latitude + 0.0004,
           longitude: position.coords.longitude,
           latitudeDelta: LATITUDE_DELTA,
           longitudeDelta: LONGITUDE_DELTA,
