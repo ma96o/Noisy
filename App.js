@@ -6,12 +6,21 @@ import {
   View,
   Text,
   StatusBar,
+  Dimensions,
 } from 'react-native';
 
 import PinMap from './PinMap';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Geolocation from '@react-native-community/geolocation';
+var {width, height} = Dimensions.get('window');
+const ASPECT_RATIO = width / height;
+// (Initial Static Location) Mumbai
+const LATITUDE = 19.076;
+const LONGITUDE = 72.8777;
+
+const LATITUDE_DELTA = 0.01;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 class App extends React.Component {
   constructor(props) {
@@ -19,14 +28,58 @@ class App extends React.Component {
     this.state = {
       error: '',
       location: '',
+      region: {
+        latitude: LATITUDE,
+        longitude: LONGITUDE,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      },
     };
   }
 
+  componentWillUnmount() {
+    Geolocation.clearWatch(this.watchID);
+  }
+
+  onRegionChange(region) {
+    this.setState({region});
+  }
+
   async componentDidMount() {
-    const location = await this.getCurrentPos(10000).catch(error => {
-      this.setState({error});
-    });
-    this.setState({location});
+    //    const location = await this.getCurrentPos(10000).catch(error => {
+    //      this.setState({error});
+    //    });
+    //    this.setState({location});
+
+    Geolocation.getCurrentPosition(
+      position => {
+        this.setState({
+          region: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+          },
+        });
+      },
+      error => alert(error.message),
+      {enableHighAccuracy: true, timeout: 2000, maximumAge: 0},
+    );
+
+    this.watchID = Geolocation.watchPosition(
+      position => {
+        const newRegion = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        };
+
+        this.onRegionChange(newRegion);
+      },
+      error => console.log(error),
+      {distanceFilter: 1},
+    );
   }
 
   getCurrentPos(timeout = 5000) {
@@ -39,17 +92,22 @@ class App extends React.Component {
   }
 
   render() {
-    const {location, error} = this.state;
+    const {location, error, region} = this.state;
     let mapModalContent;
-    if (location) {
-      const LATITUDE = location.coords.latitude;
-      const LONGITUDE = location.coords.longitude;
+    //    if (location) {
+    //      const LATITUDE = location.coords.latitude;
+    //      const LONGITUDE = location.coords.longitude;
+    if (region) {
+      const LATITUDE = region.latitude;
+      const LONGITUDE = region.longitude;
       mapModalContent = (
         <PinMap
           latitude={LATITUDE}
           longitude={LONGITUDE}
           address={''}
           navigation={this.props.navigation}
+          region={region}
+          onRegionChange={this.onRegionChange.bind(this)}
         />
       );
     }
@@ -61,15 +119,15 @@ class App extends React.Component {
             contentInsetAdjustmentBehavior="automatic"
             style={styles.scrollView}>
             <View style={styles.body}>
-              {!!location && (
+              {!!region && (
                 <View style={{flex: 1}}>
                   {mapModalContent}
                   <View style={{flex: 1}}>
-                    <Text>{`location: ${JSON.stringify(location)}`}</Text>
-                    {Object.keys(location.coords).map(key => {
+                    <Text>{`location: ${JSON.stringify(region)}`}</Text>
+                    {Object.keys(region).map(key => {
                       return (
                         <Text key={key}>
-                          {key} : {location.coords[key]}
+                          {key} : {region[key]}
                         </Text>
                       );
                     })}
