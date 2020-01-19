@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {SafeAreaView, View, Text, Dimensions, StyleSheet} from 'react-native';
+import {View, Text, Dimensions, StyleSheet} from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
 
 import Geolocation, {
   GeolocationResponse,
