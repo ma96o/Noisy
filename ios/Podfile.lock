@@ -225,8 +225,13 @@ PODS:
     - ReactCommon/jscallinvoker (= 0.61.2)
   - RNCMaskedView (0.1.6):
     - React
+  - RNEventEmitter (1.0.15):
+    - React
   - RNGestureHandler (1.5.3):
     - React
+  - RNSpotify (1.2.13):
+    - React
+    - RNEventEmitter
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -261,7 +266,9 @@ DEPENDENCIES:
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
+  - RNEventEmitter (from `../node_modules/react-native-events`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNSpotify (from `../node_modules/rn-spotify-sdk`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -325,8 +332,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
+  RNEventEmitter:
+    :path: "../node_modules/react-native-events"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNSpotify:
+    :path: "../node_modules/rn-spotify-sdk"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -360,9 +371,11 @@ SPEC CHECKSUMS:
   React-RCTVibration: fb54c732fd20405a76598e431aa2f8c2bf527de9
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
   RNCMaskedView: e5b99bc191945f157adeede68da9d424462de177
+  RNEventEmitter: a43a853a0de1dee334d007a4b3d2a6dc29c77270
   RNGestureHandler: 02905abe54e1f6e59c081a10b4bd689721e17aa6
+  RNSpotify: db833fc2befb85748faf82fc768d383a104bc677
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
-PODFILE CHECKSUM: 776ec0cc39adca0d183e5e8156bea24aed21337f
+PODFILE CHECKSUM: 2fe2fd2124d8ccf9b8ef5259ce676aa25754c681
 
 COCOAPODS: 1.8.1
