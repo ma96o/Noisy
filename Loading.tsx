@@ -11,7 +11,7 @@ class Loading extends React.Component {
     this.props.navigation.dispatch(
       StackActions.reset({
         index: 0,
-        actions: [StackActions.push({routeName: 'Home'})],
+        actions: [StackActions.push({routeName: 'Maintab'})],
       }),
     );
   };

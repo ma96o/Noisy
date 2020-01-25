@@ -4,14 +4,14 @@ import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 
 import Loading from './Loading';
-import Home from './Home';
+import Maintab from './Maintab';
 import CurrentUserMapView from './CurrentUserMapView';
 import TrackUserMapView from './TrackUserMapView';
 
 const MainNavigator = createStackNavigator(
   {
     Loading: {screen: Loading},
-    Home: {screen: Home},
+    Maintab: {screen: Maintab},
     CurrentUserMapView: {screen: CurrentUserMapView},
     TrackUserMapView: {screen: TrackUserMapView},
   },
