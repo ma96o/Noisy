@@ -1,13 +1,14 @@
 import React from 'react';
 import {StyleSheet, View, Text, TouchableHighlight} from 'react-native';
-import {StackActions} from 'react-navigation';
 import SafeAreaView from 'react-native-safe-area-view';
 
 import Home from './Home';
+import Player from './Player';
 import Mypage from './Mypage';
 
 FOOTER_TABS = {
   home: 'Home',
+  player: 'Player',
   mypage: 'Mypage',
 };
 
@@ -20,15 +21,6 @@ class Maintab extends React.Component {
       page: FOOTER_TABS.home,
     };
   }
-
-  nextAction = () => {
-    this.props.navigation.dispatch(
-      StackActions.reset({
-        index: 0,
-        actions: [StackActions.push({routeName: 'Mypage'})],
-      }),
-    );
-  };
 
   footerTabAction = page => {
     this.setState({page});
@@ -67,9 +59,10 @@ class Maintab extends React.Component {
     switch (this.state.page) {
       case FOOTER_TABS.home:
         return <Home />;
-      case FOOTER_TABS.mypage: {
+      case FOOTER_TABS.player:
+        return <Player />;
+      case FOOTER_TABS.mypage:
         return <Mypage />;
-      }
     }
   };
 }
